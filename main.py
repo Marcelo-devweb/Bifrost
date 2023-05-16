@@ -4,6 +4,15 @@ import argparse
 import queue
 import sys
 import sounddevice as sd
+import pyttsx3
+engine = pyttsx3.init()
+
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[-2].id)
+
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
 
 from vosk import Model, KaldiRecognizer
 
