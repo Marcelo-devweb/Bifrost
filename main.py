@@ -5,6 +5,7 @@ import os
 import pyaudio
 import pyttsx3
 import json
+import core
 engine = pyttsx3.init()
 
 voices = engine.getProperty('voices')
@@ -33,5 +34,8 @@ while True:
             text = result['text']
 
             print(text)
-            speak(text)
+
+
+            if text == 'que horas são' or text == 'me diga as horas':
+                speak(core.SystemInfo.get_time())
 
