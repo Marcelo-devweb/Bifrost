@@ -32,6 +32,6 @@ commands:
     entity: open
     action: 
   - commmand:
-    input:  Abra youtubr
+    input:  Abra youtube
     entity: open
     action:
