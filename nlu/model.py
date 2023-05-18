@@ -14,38 +14,21 @@ for command in data['commands']:
     outputs.append('{}\{}'.format(command['entity'], command['action']))
 
 
-chars = set()
-
-for input in inputs + outputs:
-    for ch in input:
-        if ch not in chars:
-            chars.add(ch)
-
-chr2idx = {}
-idx2chr = {}
-
-for i, ch in enumerate(chars):
-    chr2idx[ch] = i
-    idx2chr[i] = ch
-
-
-
-max_seq = max([len(x) for x in inputs])
-
-print('Múmero de chars:', len(chars))
+max_seq = max([len(bytes(x.encode('uft-8'))) for x in inputs])
 print('Maior seq:',max_seq)
 
-input_data = np.zeros((len(inputs), max_seq, len(chars)), dtype='int32')
+input_data = np.zeros((len(inputs), max_seq, 256), dtype='float32')
+for i, inp in enumerate(inputs):
+    for k, ch in enumerate(bytes(inp.encode('utf-8'))):
+        input_data[i, k, int(ch)] = 1.0
 
-for i, input in enumerate(inputs):
-    for k, ch in enumerate(input):
-        input_data[i, k, chr2idx[ch]] = 1.0
-
+'''
 input_data = np.zeros((len(inputs), max_seq), dtype='int32')
 
 for i, input in enumerate(inputs):
     for k, ch in enumerate(input):
         input_data[i, k] = chr2idx[ch]
+'''
 
 labels = set(outputs)
 label2idx = {}
@@ -53,7 +36,7 @@ idx2label = {}
 
 for k, label in enumerate (labels):
     label2idx[label] = k
-    idx2chr[k] = label
+    idx2label[k] = label
 
 output_data = []
 
@@ -65,13 +48,17 @@ output_data = to_categorical(output_data, len(output_data))
 print(output_data[0])
 
 model = Sequential()
-model.add(Embedding(len(chars), 64))
-model.add(LSTM(128, return_sequences=True))
+model.add(LSTM(128))
 model.add(Dense(len(output_data), activation='softmax'))
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
 
-model.fit(input_data, output_data, epochs=16)
+model.fit(input_data, output_data, epochs=128)
+
+def classify(text):
+    x = np.zeros((1, max_seq,256), dtype='float32')
+
+    for k, ch in enumerate()
 
 '''
 print(inputs)
