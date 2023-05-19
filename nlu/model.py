@@ -14,7 +14,7 @@ for command in data['commands']:
     outputs.append('{}\{}'.format(command['entity'], command['action']))
 
 
-max_seq = max([len(bytes(x.encode('uft-8'))) for x in inputs])
+max_seq = max([len(bytes(x.encode('utf-8'))) for x in inputs])
 print('Maior seq:',max_seq)
 
 input_data = np.zeros((len(inputs), max_seq, 256), dtype='float32')
@@ -56,12 +56,15 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc']
 model.fit(input_data, output_data, epochs=128)
 
 def classify(text):
-    x = np.zeros((1, max_seq,256), dtype='float32')
+    x = np.zeros((1, 48, 256), dtype='float32')
 
-    for k, ch in enumerate()
+    for k, ch in enumerate(bytes(text.encode('utf-8'))):
+        x[0, k, int(ch)] = 1.0
 
-'''
-print(inputs)
-print(outputs)
-'''
+    out = model.predict(x)
+    idx = out.argmax()
+    print(idx2label[idx])
 
+while True:
+    text = input('Digite Algo: ')
+    classify(text)
